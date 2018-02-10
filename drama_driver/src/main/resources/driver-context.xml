@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	        http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/util 
+			http://www.springframework.org/schema/util/spring-util-2.0.xsd"
+			default-lazy-init="true">	
+
+<import resources="classpath:msjava/cxfutils/container-defaults.xml" />
+<import resources="classpath:driver-properties.xml" />
+
+<bean id="dmlc" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+   <property name="connectionFactory">
+             <util:property-path path="mq.connectionFactory" />
+   </property>
+   <property name="destinationName" value="${REQ_QUEUE}" /> 
+   <property name="messageListener"> <bean class="com.ms.drama.driver.DriverListener" />
+    </property>
+   <property name="sessionTransacted" value="false" />
+   <property name="concurrentConsumers" value="6" />
+   <property name="concurrency" value="2-9" />
+   <property name="maxConcurrentConsumers" value="15" />
+</bean>
+
+<bean id="mq" class="msjava.cxfutils.transport.jms.JMSClientTransport">
+    <property name="connectionFactory" ref="mqConnectionFactory" />
+    <property name="responseQueueName" value="${REQ_QUEUE}}" />	
+	<property name="requestQueueName" value="${RES_QUEUE}" />
+	
+	</bean>
+	
+<bean name="mqConnectionFactory" class="msjava.mqjms.MQConnectionFactory">
+   <property name="queueManagerName" value="{QUEUE_MANAGER_NAME}" />	
+ </bean>
+
+<bean id="messageSender" class="msjava.cxfutils.client.messaging.HDOMMessageSenderImpl">
+   <property name="clientTransport" ref="driverConfig" />
+</bean> 
+
+<bean id="stateCache" class="com.ms.drama.driver.state.StateCache">
+   <property name="driverConfig" ref="driverConfig" />
+   
+</bean>
+
+</beans>
+
+

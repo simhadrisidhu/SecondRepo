@@ -1,0 +1,27 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	   <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+	   <property name="ignoreResourceNotFound" value="true" />
+	   <property name="locations">
+	        <list>
+			  <value>classpath:/config/${CONFIG_MODE:DEV}/driver.properties</value>
+			 </list>
+       </property>
+    </bean>
+
+    <bean id="driverConfig" class="com.ms.drama.driver.model.DriverConfig">
+	   <property name="projectRoot" value="${PROJECT_ROOT}" />
+	   <property name="networkDirectory" value="{NETWORK_DIR}" />
+	   <property name="hdfsDirectory" value="{HDFS_DIRECTORY}" />
+	   <property name="statusDirectory" value="{STATUS_DIR}" />
+	   
+	   </bean>
+	   
+	   </beans>
+	
+	
+	
